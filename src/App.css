@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.App {
+    height: 100%;
+}
+
+.main {
+    height: 100%;
+}
+
+.sub {
+    height: 100%;
+}
+
+.header {
+    padding: 0;
+    background-color: #e3e3e3;
+}
+
+.top {
+    height: 100%;
+}
+
+.top ul {
+    width: 300px;
+    height: 100%;
+    /*background-color: #adfff5;*/
+    float: right;
+    display: flex;
+    justify-content: space-around;
+}
+
+.top ul li {
+    width: 30%;
+    min-width: 80px;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.top-person span, .top-close span {
+    margin-left: 8%;
+}
+
+.sider {
+    height: 100%;
+    background-color: #d0fad9;
+}
+
+.sider .left, .sider .left .left-menu {
+    height: 100%;
+}
+
+.footer {
+    background-color: #adfff5;
+}
