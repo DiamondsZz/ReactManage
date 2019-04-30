@@ -6,12 +6,7 @@
 .App {
     height: 100%;
 }
-
 .main {
-    height: 100%;
-}
-
-.sub {
     height: 100%;
 }
 
@@ -19,7 +14,6 @@
     padding: 0;
     background-color: #e3e3e3;
 }
-
 .top {
     height: 100%;
 }
@@ -54,7 +48,29 @@
 .sider .left, .sider .left .left-menu {
     height: 100%;
 }
-
-.footer {
-    background-color: #adfff5;
+.sub {
+    height: 100%;
+}
+.shop-selected,.shop-update{
+     display: flex;
+     justify-content: space-around;
+ }
+.shop-selected img,.shop-update img{
+    width: 200px;
+    height: 200px;
+}
+.shop-selected ul,.shop-update ul{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.shop-selected ul li,.shop-update ul li{
+    list-style: none;
+}
+.shop-update ul li{
+   margin-bottom: 10px;
+}
+.shop-save{
+    display: flex;
+    justify-content: center;
 }

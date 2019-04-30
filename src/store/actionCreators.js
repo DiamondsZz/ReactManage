@@ -1,12 +1,12 @@
 import * as constants from './actionTypes'
 
-export const getUserData=(user)=> ({
-    type:constants.INIT_USER,
-    user:user
+
+export const getShopData=(shopList)=> ({
+    type:constants.INIT_SHOP,
+    shopList:shopList
 });
 
-export const getShopData=(shop)=> ({
-    type:constants.INIT_SHOP,
+export const updateShopData=(shop)=> ({
+    type:constants.UPDATE_SHOP,
     shop:shop
 });
-
