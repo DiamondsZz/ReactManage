@@ -29,8 +29,12 @@ class App extends Component {
                     <Layout className="sub">
                         <Sider className='sider'><Left/></Sider>
                         <Content>
+
                             <Route path='/user' component={User}/>
+
                             <Route path='/shop' component={Shop}/>
+
+
                         </Content>
                     </Layout>
                 </Layout>

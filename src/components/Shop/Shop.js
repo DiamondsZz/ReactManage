@@ -1,70 +1,69 @@
 import React, {Component} from 'react'
-
+import {connect} from 'react-redux';
 import {Table, Divider, Button, Modal, Popconfirm, message, InputNumber, Input} from 'antd'
 
 import shopList from './../../mock/shopList'
-import store from './../../store/'
-import {getShopData,updateShopData} from './../../store/actionCreators'
 
-const {TextArea} = Input
+import {getShopData, updateShopData} from './../../store/actionCreators'
 
+const {TextArea} = Input;
 
 
 class Shop extends Component {
+
+
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
 
+            showModalVisible: false,
+            selectedShop: {},
+            updateModalVisible: false,
+            updatedShop: {
+                shopName: '',
+                shopPrice: 0,
+                shopIntroduce: ''
+            },
 
-
-        }
-
-        this.state=store.getState();
-        store.subscribe(()=>{
-            this.setState(store.getState());
-        })
-    }
-
-
-    dataSource = [];
-    columns = [
-        {
-            align: 'center',
-            title: '商品编号',
-            dataIndex: 'shopId',
-            key: 'shopId',
-        },
-        {
-            align: 'center',
-            title: '商品图片',
-            dataIndex: 'shopImg',
-            key: 'shopImg',
-            render: (text, record, index) => {
-                return (<span>
+            dataSource: [],
+            columns: [
+                {
+                    align: 'center',
+                    title: '商品编号',
+                    dataIndex: 'shopId',
+                    key: 'shopId',
+                },
+                {
+                    align: 'center',
+                    title: '商品图片',
+                    dataIndex: 'shopImg',
+                    key: 'shopImg',
+                    render: (text, record, index) => {
+                        return (<span>
                 <img src={text} alt="" width={'50px'}/>
             </span>);
-            }
-        },
-        {
-            align: 'center',
-            title: '商品名称',
-            dataIndex: 'shopName',
-            key: 'shopName',
-        },
-        {
-            align: 'center',
-            title: '商品价格',
-            dataIndex: 'shopPrice',
-            key: 'shopPrice',
-        },
-        {
-            align: 'center',
-            title: '操作',
-            dataIndex: 'shopAction',
-            key: 'shopAction',
-            render: (text, record, index) => {
-                return (
-                    <span>
+                    }
+                },
+                {
+                    align: 'center',
+                    title: '商品名称',
+                    dataIndex: 'shopName',
+                    key: 'shopName',
+                },
+                {
+                    align: 'center',
+                    title: '商品价格',
+                    dataIndex: 'shopPrice',
+                    key: 'shopPrice',
+                },
+                {
+                    align: 'center',
+                    title: '操作',
+                    dataIndex: 'shopAction',
+                    key: 'shopAction',
+                    render: (text, record, index) => {
+                        return (
+                            <span>
                     <Button type={'primary'} ghost onClick={() => this.shopShow(record)}>查看</Button>
                       <Divider type={'vertical'}/>
                     <Button type={'danger'}>增加</Button>
@@ -77,20 +76,26 @@ class Shop extends Component {
                      <Button type={'danger'} ghost>删除</Button>
                      </Popconfirm>
             </span>
-                )
-            }
+                        )
+                    }
+                }
+            ]
+
+
         }
-    ];
 
 
+    }
+
+    componentWillMount() {
+        this.props.reqGetShopData(shopList);
+    }
 
     shopShow = (record) => {
         // console.log(record);
         this.setState({
             showModalVisible: true,
             selectedShop: record
-        }, () => {
-            //console.log(this.state);  //异步
         });
     };
 
@@ -115,38 +120,53 @@ class Shop extends Component {
         })
     }
 
-    shopNameChange(e){
-        this.state.updatedShop.shopName=e.target.value;
-    }
-    shopPriceChange=(value)=>{
-        this.state.updatedShop.shopPrice=value;
-    }
-    shopIntroduceChange=(e)=>{
-        this.state.updatedShop.shopIntroduce=e.target.value;
+    shopNameChange(e) {
+        this.setState({
+            updatedShop: {
+                shopName: e.target.value
+            }
+        })
     }
 
+    shopPriceChange = (value) => {
+        this.setState({
+            updatedShop: {
+                shopPrice: value
+            }
+        })
+    }
+    shopIntroduceChange = (e) => {
+        this.setState({
+            updatedShop: {
+                shopIntroduce: e.target.value
+            }
+        })
+    }
 
-    shopSave=()=> {
-        store.dispatch(updateShopData({oldShop:this.state.selectedShop,newShop:this.state.updatedShop}));
 
-        this.dataSource=(store.getState().shopList);
-
+    shopSave = () => {
+        //store.dispatch(updateShopData({oldShop: this.state.selectedShop, newShop: this.state.updatedShop}));
+        this.props.reqUpdateShopData({oldShop: this.state.selectedShop, newShop: this.state.updatedShop})
+        this.setState({
+            updateModalVisible: false,
+        });
         message.success('保存成功！', 2)
-
-    }
+    };
 
 
     shopDeleteConfirm = (shop) => {
 
-        let shopList=store.getState().shopList;
-        shopList.map((value,index,shopList)=>{
-            if(value.shopId===shop.shopId)
-            {
+        let shopList = this.props.shopList;
+        shopList.map((value, index, shopList) => {
+            if (value.shopId === shop.shopId) {
                 shopList.splice(index, 1);
             }
         })
-        store.dispatch(getShopData(shopList))
 
+        this.props.reqGetShopData(shopList);
+        this.setState({
+            dataSource:this.props.shopList
+        })
         message.success('删除成功！', 2)
     }
 
@@ -154,24 +174,12 @@ class Shop extends Component {
         message.error('取消删除！', 2)
     }
 
-    UNSAFE_componentWillMount(){
-        store.dispatch(getShopData(shopList))
-
-    }
-
-    componentDidMount() {
-
-
-        store.dispatch(getShopData(shopList))
-
-        this.dataSource = this.state.shopList;
-
-    }
 
     render() {
+        this.state.dataSource = this.props.shopList;
         return (
             <div className="shop">
-                <Table dataSource={this.dataSource} columns={this.columns} bordered={true}/>
+                <Table dataSource={this.state.dataSource} columns={this.state.columns} bordered={true}/>
 
                 <Modal
                     title="商品信息"
@@ -200,7 +208,6 @@ class Shop extends Component {
 
                 </Modal>
 
-
                 <Modal
                     title="商品信息"
                     visible={this.state.updateModalVisible}
@@ -212,18 +219,18 @@ class Shop extends Component {
                         <ul>
                             <li className="shop-update-name">
                                 <span>商品名称:</span><br/>
-                                <span> <Input  onChange ={(e)=>this.shopNameChange(e)}/> </span>
+                                <span> <Input onChange={(e) => this.shopNameChange(e)}/> </span>
                             </li>
                             <li className="shop-update-price">
                                 <span>商品价格:</span><br/>
                                 <span> <InputNumber min={1} max={1000} autoFocus={true}
-                                                    onChange={this.shopPriceChange}      /> </span>
+                                                    onChange={this.shopPriceChange}/> </span>
                             </li>
                             <li className="shop-update-introduce">
                                 <span>商品介绍:</span><br/>
 
                                 <span> <TextArea autosize={{minRows: 2, maxRows: 6}}
-                                                 onChange={(e)=>this.shopIntroduceChange(e)}  /> </span>
+                                                 onChange={(e) => this.shopIntroduceChange(e)}/> </span>
                             </li>
                         </ul>
                         <img src="" alt=""/>
@@ -237,5 +244,24 @@ class Shop extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        shopList: state.shopList
+    }
+};
 
-export default Shop;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        reqGetShopData(shopList) {
+            const action = getShopData(shopList);
+            dispatch(action)
+        },
+        reqUpdateShopData(shop) {
+            const action = updateShopData(shop);
+            dispatch(action)
+        }
+    }
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Shop);

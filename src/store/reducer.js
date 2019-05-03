@@ -2,14 +2,6 @@ import {INIT_SHOP,UPDATE_SHOP} from "./actionTypes";
 
 const defaultState={
     shopList:[],
-    showModalVisible: false,
-    selectedShop: {},
-    updateModalVisible: false,
-    updatedShop: {
-        shopName: '',
-        shopPrice: 0,
-        shopIntroduce: ''
-    }
 };
 
 export default (state=defaultState, action) => {
@@ -17,7 +9,7 @@ export default (state=defaultState, action) => {
     {
         const newState =JSON.parse(JSON.stringify(state));
           newState.shopList=action.shopList;
-          return newState;
+        return newState;
     }
     if(action.type===UPDATE_SHOP)
     {
