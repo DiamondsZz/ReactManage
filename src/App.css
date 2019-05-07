@@ -51,26 +51,52 @@
 .sub {
     height: 100%;
 }
-.shop-selected,.shop-update{
+
+.sub .content{
+    margin: 20px 20px 0 20px;
+}
+
+
+
+
+.shop-selected,.shop-update,.shop-add{
      display: flex;
      justify-content: space-around;
  }
-.shop-selected img,.shop-update img{
+.shop-selected img,.shop-update img,.shop-add img{
     width: 200px;
     height: 200px;
 }
-.shop-selected ul,.shop-update ul{
+.shop-selected ul,.shop-update ul,.shop-add ul{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
-.shop-selected ul li,.shop-update ul li{
+.shop-selected ul li,.shop-update ul li,.shop-add ul li {
     list-style: none;
 }
-.shop-update ul li{
+.shop-update ul li,.shop-add ul li{
    margin-bottom: 10px;
 }
-.shop-save{
+.shop-save,.shop-add-confirm{
     display: flex;
     justify-content: center;
+}
+
+
+.shop .shop-bread{
+     margin: 0 0 20px 10px;
+}
+.shop .shop-top{
+    /*background-color: darkmagenta;*/
+    overflow: hidden;
+    margin: 0 20px 20px 10px;
+}
+
+.shop .shop-top .shop-add-btn{
+    float: left;
+}
+.shop .shop-top .shop-search{
+    width: 300px;
+    float: right;
 }

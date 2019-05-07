@@ -1,4 +1,4 @@
-import {INIT_SHOP,UPDATE_SHOP} from "./actionTypes";
+import {INIT_SHOP,UPDATE_SHOP,DELETE_SHOP} from "./actionTypes";
 
 const defaultState={
     shopList:[],
@@ -14,13 +14,14 @@ export default (state=defaultState, action) => {
     if(action.type===UPDATE_SHOP)
     {
         let newState =JSON.parse(JSON.stringify(state));
-         newState.shopList.forEach((shop,index)=>{
-             if(shop.shopId===action.shop.oldShop.shopId)
-             {
-                 newState.shopList[index]=Object.assign(newState.shopList[index], action.shop.newShop);
-             }
-        });
+        newState.shopList=action.shopList;
         return newState
+    }
+    if(action.type===DELETE_SHOP)
+    {
+        const newState =JSON.parse(JSON.stringify(state));
+        newState.shopList=action.shopList;
+        return newState;
     }
     return state;
 }

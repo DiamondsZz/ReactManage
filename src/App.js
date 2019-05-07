@@ -28,7 +28,7 @@ class App extends Component {
                     <Header className='header'><Top/></Header>
                     <Layout className="sub">
                         <Sider className='sider'><Left/></Sider>
-                        <Content>
+                        <Content className='content'>
 
                             <Route path='/user' component={User}/>
 
