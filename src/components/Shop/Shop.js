@@ -1,12 +1,17 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom'
-import {Breadcrumb, Table, Divider, Button, Modal, Popconfirm, message, InputNumber, Input} from 'antd'
+import {Breadcrumb, Table, Divider, Button, Modal, Popconfirm, message, InputNumber, Input,Upload,Icon} from 'antd'
 
-import {getShopData, updateShopData, deleteShopData} from './../../store/actionCreators'
+import {getShopData, updateShopData, deleteShopData,addShopData} from './../../store/actionCreators'
 
 const {TextArea} = Input;
 const Search = Input.Search;
+
+
+
+
+
 
 class Shop extends Component {
 
@@ -36,8 +41,18 @@ class Shop extends Component {
             addedShop: {
                 shopName: '',
                 shopPrice: '',
+                shopImg:'',
+                shopImgType:'',
                 shopDes: ''
             }, //被添加商品的数据
+            addShopImgLoading:false,
+            addShopImgUrl:'',
+
+
+
+
+
+
             dataSource: [], //Talbe数据对象源
             columns: [
                 {
@@ -106,9 +121,44 @@ class Shop extends Component {
 
 
         }
-
-
     }
+
+    //汉字转 unicode 16进制
+    word2Unicode(word) {
+        let str = '';
+        for (let i = 0; i < word.length; i++) {
+            str += '\\u' + word[i].charCodeAt(0).toString(16);
+        }
+        return str;
+    }
+
+
+    //获取上传图片的base64格式
+     getBase64(img, callback) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+     }
+
+
+     //上传之前图片限制
+   beforeUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        if (!isJPG) {
+            message.error('只能上传JPG图片!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('图片不能小于2MB!');
+        }
+        return isJPG && isLt2M;
+    }
+
+
+
+
+
+
 
     //挂载前请求商品数据
     componentWillMount() {
@@ -165,24 +215,103 @@ class Shop extends Component {
     addHandleCancel = () => {
         this.setState({
             addModalVisible: false,
-            //清空上一次商品修改数据
+            //清空上一次商品添加数据
             addedShop: {
                 shopName: '',
                 shopPrice: '',
+                shopImg:'',
+                shopImgType:'',
                 shopDes: ''
-            },
+            }
+        })
+    }
+
+
+    //记录添加商品名字改变
+    addShopNameChange(e){
+        let addedShop = this.state.addedShop;
+        this.setState({
+            addedShop: Object.assign(addedShop, {
+                shopName: e.target.value
+            })
+        })
+    }
+
+    //记录添加商品名字改变
+    addShopPriceChange=(value)=>{
+        let addedShop = this.state.addedShop;
+        this.setState({
+            addedShop: Object.assign(addedShop, {
+                shopPrice:value
+            })
+        })
+    }
+
+    //记录添加商品名字改变
+    addShopDesChange(e){
+        let addedShop = this.state.addedShop;
+        this.setState({
+            addedShop: Object.assign(addedShop, {
+                shopDes: e.target.value
+            })
         })
     }
 
 
 
+    //监听上传图片状态改变
+    addImgChange = (info) => {
+        console.log(info);
+        if (info.file.status === 'uploading') {
+            this.setState({ addShopImgLoading: true });
+            return;
+        }
+        if (info.file.status === 'done') {
+
+            this.getBase64(info.file.originFileObj, addShopImgUrl => this.setState({
+                addShopImgUrl,
+                addShopImgLoading: false,
+            },()=>{
+                let addedShop = this.state.addedShop;
+                this.setState({
+                    addedShop: Object.assign(addedShop, {
+                        shopImg: this.state.addShopImgUrl,  //记录添加商品图片的base64格式
+                        shopImgType:info.file.type
+                    })
+                })
+                message.success("图片上传成功");
+            }));
+
+        }
+    }
+
+    //商品添加提交
+    shopAddConfirm=()=>{
+        console.log(this.state.addedShop);
+        if (this.state.addedShop.shopName === '') {
+            message.error('商品名字不能为空！', 2)
+
+        } else if (this.state.addedShop.shopPrice === '' || this.state.addedShop.shopPrice === null) {
+            message.error('商品价格不能为空！', 2)
+
+        } else if (this.state.addedShop.shopDes === '') {
+            message.error('商品描述不能为空！', 2)
+        } else if (this.state.addedShop.shopImg === '') {
+            message.error('请上传商品图片哦！', 2)
+        } else {
+            let shop = this.state.addedShop;
+            this.props.reqAddShopData(shop)
+            this.setState({
+                addModalVisible: false,
+            });
+            message.success('添加成功！', 2)
+        }
+    }
 
 
 
 
-
-
-    //记录商品名字改变
+    //记录修改商品名字改变
     shopNameChange(e) {
         let updatedShop = this.state.updatedShop;
         this.setState({
@@ -192,7 +321,7 @@ class Shop extends Component {
         })
     }
 
-    //记录商品价格改变
+    //记录修改商品价格改变
     shopPriceChange = (value) => {
         let updatedShop = this.state.updatedShop;
         this.setState({
@@ -202,7 +331,7 @@ class Shop extends Component {
         })
 
     }
-    //记录商品描述改变
+    //记录修改商品描述改变
     shopDesChange = (e) => {
         let updatedShop = this.state.updatedShop;
         this.setState({
@@ -260,16 +389,6 @@ class Shop extends Component {
         return last ? <span>{route.breadcrumbName}</span> : <Link to={paths.join('/')}>{route.breadcrumbName}</Link>;
     }
 
-    //汉字转 unicode 16进制
-    word2Unicode(word) {
-        let str = '';
-        for (let i = 0; i < word.length; i++) {
-            str += '\\u' + word[i].charCodeAt(0).toString(16);
-        }
-        return str;
-    }
-
-
     //搜索商品
     searchShop(value) {
 
@@ -277,7 +396,7 @@ class Shop extends Component {
             dataSource:this.props.shopList,  //初始化dataSource
             searchValue: value
         }, () => {
-            console.log(this.state.searchValue);
+            //console.log(this.state.searchValue);
             let searchShopList = [];
             let pattern = new RegExp(this.word2Unicode(this.state.searchValue));
             this.state.dataSource.map((shop, index) => {
@@ -302,7 +421,18 @@ class Shop extends Component {
 
 
     render() {
-        console.log(this);
+
+        const uploadButton = (
+            <div>
+                <Icon type={this.state.addShopImgLoading ? 'loading' : 'plus'} />
+                <div>点击上传</div>
+            </div>
+        );
+
+
+
+
+
         return (
             <div className="shop">
 
@@ -413,7 +543,17 @@ class Shop extends Component {
                                                  onChange={(e) => this.addShopDesChange(e)}/> </span>
                             </li>
                         </ul>
-                        <img src="" alt=""/>
+                        <Upload
+                            className="shop-add-img"
+                            listType="picture-card"
+                            showUploadList={false}
+                            action='http://localhost:3003/manage/addShopImg'
+                            beforeUpload={this.beforeUpload}
+                            onChange={this.addImgChange}
+                        >
+                            {this.state.addShopImgUrl ? <img src={this.state.addShopImgUrl}  /> : uploadButton}
+                        </Upload>
+
                     </div>
                     <div className="shop-add-confirm"><Button type={'danger'} onClick={this.shopAddConfirm}>添加</Button></div>
                 </Modal>
@@ -433,8 +573,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        reqGetShopData(shopList) {
-            const action = getShopData(shopList);
+        reqGetShopData() {
+            const action = getShopData();
             dispatch(action);
         },
         reqUpdateShopData(shop) {
@@ -445,8 +585,16 @@ const mapDispatchToProps = (dispatch) => {
             const action = deleteShopData(shop);
             dispatch(action)
         },
+        reqAddShopData(shop) {
+            const action = addShopData(shop);
+            dispatch(action)
+        },
     }
 };
+
+
+
+
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Shop);

@@ -63,10 +63,14 @@
      display: flex;
      justify-content: space-around;
  }
-.shop-selected img,.shop-update img,.shop-add img{
+.shop-selected img, .shop-update img,
+.shop-add .shop-add-img,
+.shop-add .shop-add-img .ant-upload,
+.shop-add .shop-add-img .ant-upload img{
     width: 200px;
     height: 200px;
 }
+
 .shop-selected ul,.shop-update ul,.shop-add ul{
     display: flex;
     flex-direction: column;

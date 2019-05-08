@@ -15,3 +15,12 @@ export const updateShop =(shop)=> {
 //删除商品
 export const deleteShop =(shop)=> Ajax(BASE_URL+'/manage/deleteShop',{shopId:shop.shopId});
 
+//添加商品
+export const addShop =(shop)=> {
+
+    return Ajax(BASE_URL+'/manage/addShop',{shop:shop},'POST');
+}
+
+//请求用户数据
+export const getUserList =()=> Ajax(BASE_URL+'/manage/user');
+

@@ -1,7 +1,8 @@
-import {INIT_SHOP,UPDATE_SHOP,DELETE_SHOP} from "./actionTypes";
+import {INIT_SHOP,UPDATE_SHOP,DELETE_SHOP,ADD_SHOP,INIT_USER} from "./actionTypes";
 
 const defaultState={
     shopList:[],
+    userList:[]
 };
 
 export default (state=defaultState, action) => {
@@ -23,5 +24,20 @@ export default (state=defaultState, action) => {
         newState.shopList=action.shopList;
         return newState;
     }
+    if(action.type===ADD_SHOP)
+    {
+        const newState =JSON.parse(JSON.stringify(state));
+        newState.shopList=action.shopList;
+        return newState;
+    }
+
+    if(action.type===INIT_USER)
+    {
+        const newState =JSON.parse(JSON.stringify(state));
+        newState.userList=action.userList;
+        return newState;
+    }
+
+
     return state;
 }

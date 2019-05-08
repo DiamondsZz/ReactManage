@@ -1,6 +1,7 @@
 import * as constants from './actionTypes'
 import store from './../store'
-import {getShopList, deleteShop,updateShop} from "../node";
+import {getShopList, deleteShop,updateShop,addShop,getUserList} from "../node";
+
 
 export const getShopData = () => {
     return (dispatch) => {
@@ -35,7 +36,7 @@ export const updateShopData = (shop) => {
 
     }
 
-};
+}
 
 
 export const deleteShopData = (shop) => {
@@ -52,6 +53,42 @@ export const deleteShopData = (shop) => {
 
         }).catch((e)=>{
             console.log(e);
+        })
+    }
+}
+
+export const addShopData = (shop) => {
+
+    return (dispatch) => {
+        //console.log(shop);
+        addShop(shop).then((res)=>{
+
+            if(res.success_code===200)
+            {
+                store.dispatch({
+                    type: constants.ADD_SHOP,
+                    shopList: res.message
+                });
+            }
+        })
+
+    }
+
+};
+
+
+
+export const getUserData = () => {
+    return (dispatch) => {
+        getUserList().then((res) => {
+
+            if (res.success_code === 200) {
+                store.dispatch({
+                    type: constants.INIT_USER,
+                    userList: res.message
+                });
+            }
+
         })
     }
 }
