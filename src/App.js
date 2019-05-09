@@ -3,41 +3,19 @@ import {BrowserRouter as Router, Route} from 'react-router-dom'
 
 import './App.css'
 
-import {Layout} from 'antd';
+import Login from './components/Login/Login'
+import Main from './components/Main/Main'
 
-import Top from './components/Top/Top'
-import Left from './components/Left/Left'
-import User from './components/User/User'
-import Shop from './components/Shop/Shop'
-
-const {
-    Header, Sider, Content,
-} = Layout;
 
 class App extends Component {
-
-    componentDidMount() {
-    }
 
 
     render() {
         return (
             <Router>
             <div className="App">
-                <Layout className="main">
-                    <Header className='header'><Top/></Header>
-                    <Layout className="sub">
-                        <Sider className='sider'><Left/></Sider>
-                        <Content className='content'>
-
-                            <Route path='/user' component={User}/>
-
-                            <Route path='/shop' component={Shop}/>
-
-
-                        </Content>
-                    </Layout>
-                </Layout>
+                <Route path='/' exact={true} component={Login}/>
+                <Route path='/main' component={Main}/>
             </div>
             </Router>
         );

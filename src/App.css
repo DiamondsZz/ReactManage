@@ -6,11 +6,11 @@
 .App {
     height: 100%;
 }
-.main {
+.main,.main-content {
     height: 100%;
 }
 
-.header {
+.main .main-content .header {
     padding: 0;
     background-color: #e3e3e3;
 }

@@ -38,11 +38,11 @@ class Left extends Component {
                     onOpenChange={this.onOpenChange}
                 >
                     <SubMenu key="home" title={<span><Icon type="mail"/><span>首页</span></span>}>
-                        <Menu.Item key="0"> <Link to='/'>数据统计</Link></Menu.Item>
+                        <Menu.Item key="0"> <Link to='/main/index'>数据统计</Link></Menu.Item>
                     </SubMenu>
                     <SubMenu key="dataShow" title={<span><Icon type="mail"/><span>数据显示</span></span>}>
-                        <Menu.Item key="1"> <Link to='/user'>用户信息</Link></Menu.Item>
-                        <Menu.Item key="2"><Link to='/shop'>商品信息</Link></Menu.Item>
+                        <Menu.Item key="1"> <Link to='/main/user'>用户信息</Link></Menu.Item>
+                        <Menu.Item key="2"><Link to='/main/shop'>商品信息</Link></Menu.Item>
                     </SubMenu>
                     <SubMenu key="dataManage" title={<span><Icon type="appstore"/><span>数据管理</span></span>}>
                         <Menu.Item key="5">商家管理</Menu.Item>
