@@ -6,13 +6,18 @@ class Top extends Component {
         super(props);
     }
 
+    exit=()=>{
+        console.log(this);
+        this.props.history.push('/')
+    }
+
     render() {
         return (
             <div className='top'>
                 <ul>
                     <li className='top-person'><Icon type='user' style={{fontSize:'16px'}}/><span >个人中心</span></li>
                     <li className='top-msg'><Icon type='bell' style={{fontSize:'16px'}}/></li>
-                    <li className='top-close'><Icon type='poweroff'style={{fontSize:'16px'}}/><span>退出</span></li>
+                    <li className='top-close' onClick={this.exit}><Icon type='poweroff'style={{fontSize:'16px'}}/><span>退出</span></li>
                 </ul>
             </div>
         );

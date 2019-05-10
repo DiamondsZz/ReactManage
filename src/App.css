@@ -6,6 +6,29 @@
 .App {
     height: 100%;
 }
+
+.login{
+    height: 100%;
+    /*background-color: #d0fad9;*/
+}
+.login .login-form{
+    width: 360px;
+    height: 260px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -130px;
+    margin-left: -180px;
+    /*background-color: antiquewhite;*/
+}
+.login .login-form .login-form-forgot
+{
+    float: right;
+}
+.login .login-form .login-form-button
+{
+    width: 100%;
+}
 .main,.main-content {
     height: 100%;
 }
@@ -39,7 +62,9 @@
 .top-person span, .top-close span {
     margin-left: 8%;
 }
-
+.top-close{
+    cursor: pointer;
+}
 .sider {
     height: 100%;
     background-color: #d0fad9;

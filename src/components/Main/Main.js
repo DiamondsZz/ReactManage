@@ -24,7 +24,7 @@ class Main extends  Component {
         return (
             <div className="main">
                 <Layout className="main-content">
-                <Header className='header'><Top/></Header>
+                <Header className='header'><Top  history={this.props.history}/></Header>
                 <Layout className="sub">
                     <Sider className='sider'><Left/></Sider>
                     <Content className='content'>

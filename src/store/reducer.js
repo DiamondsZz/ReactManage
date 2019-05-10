@@ -2,7 +2,13 @@ import {INIT_SHOP,UPDATE_SHOP,DELETE_SHOP,ADD_SHOP,INIT_USER} from "./actionType
 
 const defaultState={
     shopList:[],
-    userList:[]
+    userList:[],
+    user:{
+        userName:'123',
+        userPetName:'Diamondszz',
+        userPwd:'123',
+        userPermission:0
+    }
 };
 
 export default (state=defaultState, action) => {

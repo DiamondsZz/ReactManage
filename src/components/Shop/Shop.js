@@ -1,16 +1,12 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom'
-import {Breadcrumb, Table, Divider, Button, Modal, Popconfirm, message, InputNumber, Input,Upload,Icon} from 'antd'
+import {Breadcrumb, Table, Divider, Button, Modal, Popconfirm, message, InputNumber, Input, Upload, Icon} from 'antd'
 
-import {getShopData, updateShopData, deleteShopData,addShopData} from './../../store/actionCreators'
+import {getShopData, updateShopData, deleteShopData, addShopData} from './../../store/actionCreators'
 
 const {TextArea} = Input;
 const Search = Input.Search;
-
-
-
-
 
 
 class Shop extends Component {
@@ -22,12 +18,12 @@ class Shop extends Component {
             //面包屑路由
             routes: [
                 {
-                path: '/',
-                breadcrumbName: '首页'
-            }, {
-                path: '/shop',
-                breadcrumbName: '商品信息'
-            }],
+                    path: '/',
+                    breadcrumbName: '首页'
+                }, {
+                    path: '/shop',
+                    breadcrumbName: '商品信息'
+                }],
             searchValue: '', //搜索框输入值
             showModalVisible: false, //查看Modal
             selectedShop: {},//当前被选中商品
@@ -41,16 +37,15 @@ class Shop extends Component {
             addedShop: {
                 shopName: '',
                 shopPrice: '',
-                shopImg:'',
-                shopImgType:'',
+                shopImg: '',
+                shopImgType: '',
                 shopDes: ''
             }, //被添加商品的数据
-            addShopImgLoading:false,
-            addShopImgUrl:'',
+            addShopImgLoading: false,  //添加商品 上传图片 加载中状态
+            addShopImgUrl: '', //添加商品 上传图片路径
 
-
-
-
+            updateBtnDisable: true,  //修改按钮禁用
+            deleteBtnDisable: true,  // 删除按钮禁用
 
 
             dataSource: [], //Talbe数据对象源
@@ -95,13 +90,17 @@ class Shop extends Component {
                             <span>
                     <Button type={'primary'} ghost onClick={() => this.shopShow(record)}>查看</Button>
                       <Divider type={'vertical'}/>
-                    <Button type={'primary'} onClick={() => this.shopUpdate(record)}>修改</Button>
+                      <Button type={'primary'}  disabled={this.state.updateBtnDisable} onClick={() => this.shopUpdate(record)}>修改</Button>
                       <Divider type={'vertical'}/>
-                    <Popconfirm title="确定要删除吗？"
-                                onConfirm={() => this.shopDeleteConfirm(record)} onCancel={this.shopDeleteCancel}
-                                okText="是" cancelText="否">
-                     <Button type={'danger'}>删除</Button>
+                       <span style={{display:this.state.deleteBtnDisable?'none':'inline'}} >
+                      <Popconfirm
+                          title="确定要删除吗？"
+                          onConfirm={() => this.shopDeleteConfirm(record)} onCancel={this.shopDeleteCancel}
+                          okText="是" cancelText="否">
+                     <Button type={'danger'} >删除</Button>
                      </Popconfirm>
+                      </span>
+
             </span>
                         )
                     }
@@ -134,15 +133,15 @@ class Shop extends Component {
 
 
     //获取上传图片的base64格式
-     getBase64(img, callback) {
+    getBase64(img, callback) {
         const reader = new FileReader();
         reader.addEventListener('load', () => callback(reader.result));
         reader.readAsDataURL(img);
-     }
+    }
 
 
-     //上传之前图片限制
-   beforeUpload(file) {
+    //上传之前图片限制
+    beforeUpload(file) {
         const isJPG = file.type === 'image/jpeg';
         if (!isJPG) {
             message.error('只能上传JPG图片!');
@@ -155,16 +154,21 @@ class Shop extends Component {
     }
 
 
-
-
-
-
-
     //挂载前请求商品数据
     componentWillMount() {
         this.props.reqGetShopData();
+        if(this.props.user.userPermission===0){
+            this.setState({
+                updateBtnDisable: true,
+                deleteBtnDisable: true,
+            })
+        }else  if(this.props.user.userPermission===1){
+            this.setState({
+                updateBtnDisable: false,
+                deleteBtnDisable: false,
+            })
+        }
     }
-
 
 
     //商品查看Modal显示
@@ -206,7 +210,7 @@ class Shop extends Component {
 
 
     //商品数据添加Modal显示
-    shopAdd= () => {
+    shopAdd = () => {
         this.setState({
             addModalVisible: true,
         });
@@ -219,8 +223,8 @@ class Shop extends Component {
             addedShop: {
                 shopName: '',
                 shopPrice: '',
-                shopImg:'',
-                shopImgType:'',
+                shopImg: '',
+                shopImgType: '',
                 shopDes: ''
             }
         })
@@ -228,7 +232,7 @@ class Shop extends Component {
 
 
     //记录添加商品名字改变
-    addShopNameChange(e){
+    addShopNameChange(e) {
         let addedShop = this.state.addedShop;
         this.setState({
             addedShop: Object.assign(addedShop, {
@@ -238,17 +242,17 @@ class Shop extends Component {
     }
 
     //记录添加商品名字改变
-    addShopPriceChange=(value)=>{
+    addShopPriceChange = (value) => {
         let addedShop = this.state.addedShop;
         this.setState({
             addedShop: Object.assign(addedShop, {
-                shopPrice:value
+                shopPrice: value
             })
         })
     }
 
     //记录添加商品名字改变
-    addShopDesChange(e){
+    addShopDesChange(e) {
         let addedShop = this.state.addedShop;
         this.setState({
             addedShop: Object.assign(addedShop, {
@@ -258,12 +262,11 @@ class Shop extends Component {
     }
 
 
-
     //监听上传图片状态改变
     addImgChange = (info) => {
         console.log(info);
         if (info.file.status === 'uploading') {
-            this.setState({ addShopImgLoading: true });
+            this.setState({addShopImgLoading: true});
             return;
         }
         if (info.file.status === 'done') {
@@ -271,12 +274,12 @@ class Shop extends Component {
             this.getBase64(info.file.originFileObj, addShopImgUrl => this.setState({
                 addShopImgUrl,
                 addShopImgLoading: false,
-            },()=>{
+            }, () => {
                 let addedShop = this.state.addedShop;
                 this.setState({
                     addedShop: Object.assign(addedShop, {
                         shopImg: this.state.addShopImgUrl,  //记录添加商品图片的base64格式
-                        shopImgType:info.file.type
+                        shopImgType: info.file.type
                     })
                 })
                 message.success("图片上传成功");
@@ -286,7 +289,7 @@ class Shop extends Component {
     }
 
     //商品添加提交
-    shopAddConfirm=()=>{
+    shopAddConfirm = () => {
         console.log(this.state.addedShop);
         if (this.state.addedShop.shopName === '') {
             message.error('商品名字不能为空！', 2)
@@ -307,8 +310,6 @@ class Shop extends Component {
             message.success('添加成功！', 2)
         }
     }
-
-
 
 
     //记录修改商品名字改变
@@ -375,6 +376,10 @@ class Shop extends Component {
         message.error('取消删除！', 2)
     }
 
+
+
+
+
     //设置商品行的key值
     setRowKey(record) {
         return record.shopId;
@@ -393,7 +398,7 @@ class Shop extends Component {
     searchShop(value) {
 
         this.setState({
-            dataSource:this.props.shopList,  //初始化dataSource
+            dataSource: this.props.shopList,  //初始化dataSource
             searchValue: value
         }, () => {
             //console.log(this.state.searchValue);
@@ -417,20 +422,14 @@ class Shop extends Component {
     }
 
 
-
-
-
     render() {
 
         const uploadButton = (
             <div>
-                <Icon type={this.state.addShopImgLoading ? 'loading' : 'plus'} />
+                <Icon type={this.state.addShopImgLoading ? 'loading' : 'plus'}/>
                 <div>点击上传</div>
             </div>
         );
-
-
-
 
 
         return (
@@ -440,7 +439,7 @@ class Shop extends Component {
                             itemRender={this.itemRender}/>
 
                 <div className="shop-top">
-                    <Button className='shop-add-btn' type={'primary'}  onClick={() => this.shopAdd()}>添加商品</Button>
+                    <Button className='shop-add-btn' type={'primary'} onClick={() => this.shopAdd()}>添加商品</Button>
                     <Search
                         className='shop-search'
                         placeholder="请输入商品名称"
@@ -451,7 +450,8 @@ class Shop extends Component {
                     />
                 </div>
 
-                <Table dataSource={this.state.dataSource.length===0?this.props.shopList:this.state.dataSource} columns={this.state.columns}
+                <Table dataSource={this.state.dataSource.length === 0 ? this.props.shopList : this.state.dataSource}
+                       columns={this.state.columns}
                        rowSelection={this.state.rowSelection}
                        rowKey={this.setRowKey}/>
 
@@ -551,13 +551,13 @@ class Shop extends Component {
                             beforeUpload={this.beforeUpload}
                             onChange={this.addImgChange}
                         >
-                            {this.state.addShopImgUrl ? <img src={this.state.addShopImgUrl}  /> : uploadButton}
+                            {this.state.addShopImgUrl ? <img src={this.state.addShopImgUrl}/> : uploadButton}
                         </Upload>
 
                     </div>
-                    <div className="shop-add-confirm"><Button type={'danger'} onClick={this.shopAddConfirm}>添加</Button></div>
+                    <div className="shop-add-confirm"><Button type={'danger'} onClick={this.shopAddConfirm}>添加</Button>
+                    </div>
                 </Modal>
-
 
 
             </div>
@@ -567,7 +567,8 @@ class Shop extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        shopList: state.shopList
+        shopList: state.shopList,
+        user:state.user
     }
 };
 
@@ -591,10 +592,6 @@ const mapDispatchToProps = (dispatch) => {
         },
     }
 };
-
-
-
-
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Shop);
