@@ -1,19 +1,27 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux';
 
 
-class Bottom extends Component {
+
+
+
+
+
+class Index extends  Component {
     constructor(props) {
         super(props);
+        this.state = {}
     }
+
 
     render() {
         return (
             <div>
-                Bottom
+
             </div>
-        );
+        )
+
     }
 }
 
-
-export default Bottom;
+export default  Index

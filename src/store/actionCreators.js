@@ -1,6 +1,6 @@
 import * as constants from './actionTypes'
 import store from './../store'
-import {getShopList, deleteShop,updateShop,addShop,getUserList} from "../node";
+import {getShopList, deleteShop,updateShop,addShop,getUserList,userLogin} from "../node";
 
 
 export const getShopData = () => {
@@ -87,6 +87,25 @@ export const getUserData = () => {
                     type: constants.INIT_USER,
                     userList: res.message
                 });
+            }
+
+        })
+    }
+}
+
+
+export const userLoginData = (user,callBack) => {
+    return (dispatch) => {
+        userLogin(user).then((res) => {
+            console.log(res);
+            if (res.success_code === 200) {
+                store.dispatch({
+                    type: constants.USER,
+                    user: res.message[0]
+                });
+                callBack&&callBack(res.message[0]);
+            }else{
+                callBack&&callBack({});
             }
 
         })

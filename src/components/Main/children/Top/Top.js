@@ -7,7 +7,7 @@ class Top extends Component {
     }
 
     exit=()=>{
-        console.log(this);
+        //console.log(this);
         this.props.history.push('/')
     }
 

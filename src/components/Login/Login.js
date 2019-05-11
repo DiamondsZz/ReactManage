@@ -1,26 +1,32 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
-import {Form, Icon, Input, Button, Checkbox,} from 'antd';
-import {getUserData} from "../../store/actionCreators";
+import {Form, Icon, Input, Button, Checkbox,Message} from 'antd';
+import {userLoginData} from "../../store/actionCreators";
 class Login extends  Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
 
-    componentWillMount(){
-        this.props.reqGetUserData();
 
 
-    }
-
+    //处理登录提交
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
+         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
-                console.log(this);
-                this.props.history.push('/main')
+                console.log('表单数据: ', values);
+
+                this.props.reqUserLogin({userName:values.username,userPwd:values.password},(user)=>{
+                    console.log(Object.keys(user).length);
+
+                    if(Object.keys(user).length===0){
+                        Message.error('账号或密码不正确!')
+                    }else {
+                        this.props.history.push('/main')
+                        Message.success('登录成功!')
+                    }
+                });
             }
         });
     }
@@ -76,8 +82,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        reqGetUserData() {
-            const action = getUserData();
+        reqUserLogin(user,callBack) {
+            const action = userLoginData(user,callBack);
             dispatch(action);
         },
     }

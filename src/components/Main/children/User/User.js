@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
-import {getUserData} from './../../store/actionCreators'
+import {getUserData} from '../../../../store/actionCreators'
 
 import {Table, Divider} from 'antd'
 

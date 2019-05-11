@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom'
 import {Breadcrumb, Table, Divider, Button, Modal, Popconfirm, message, InputNumber, Input, Upload, Icon} from 'antd'
 
-import {getShopData, updateShopData, deleteShopData, addShopData} from './../../store/actionCreators'
+import {getShopData, updateShopData, deleteShopData, addShopData} from '../../../../store/actionCreators'
 
 const {TextArea} = Input;
 const Search = Input.Search;

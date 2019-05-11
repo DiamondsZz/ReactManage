@@ -1,15 +1,11 @@
-import {INIT_SHOP,UPDATE_SHOP,DELETE_SHOP,ADD_SHOP,INIT_USER} from "./actionTypes";
+import {INIT_SHOP,UPDATE_SHOP,DELETE_SHOP,ADD_SHOP,INIT_USER,USER} from "./actionTypes";
 
-const defaultState={
-    shopList:[],
-    userList:[],
-    user:{
-        userName:'123',
-        userPetName:'Diamondszz',
-        userPwd:'123',
-        userPermission:0
-    }
-};
+const defaultState= {
+    shopList: [],
+    userList: [],
+    user:{}
+
+}
 
 export default (state=defaultState, action) => {
     if(action.type===INIT_SHOP)
@@ -44,6 +40,11 @@ export default (state=defaultState, action) => {
         return newState;
     }
 
-
+    if(action.type===USER)
+    {
+        const newState =JSON.parse(JSON.stringify(state));
+        newState.user=action.user;
+        return newState;
+    }
     return state;
 }

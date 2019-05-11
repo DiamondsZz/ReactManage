@@ -9,7 +9,7 @@
 
 .login{
     height: 100%;
-    /*background-color: #d0fad9;*/
+    /*background-color: #000;*/
 }
 .login .login-form{
     width: 360px;
@@ -19,7 +19,7 @@
     left: 50%;
     margin-top: -130px;
     margin-left: -180px;
-    /*background-color: antiquewhite;*/
+    /*background-color:#fff;*/
 }
 .login .login-form .login-form-forgot
 {

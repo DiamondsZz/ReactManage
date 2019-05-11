@@ -1,12 +1,15 @@
 import React, {Component} from 'react'
-import {BrowserRouter as Router, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Route,Switch} from 'react-router-dom'
 import {connect} from 'react-redux';
-import Shop from "./../../components/Shop/Shop";
-import User from "./../../components/User/User";
+
 
 import {Layout} from 'antd';
-import Top from './../../components/Top/Top'
-import Left from './../../components/Left/Left'
+import Top from './children/Top/Top'
+import Left from './children/Left/Left'
+import Shop from "./children/Shop/Shop";
+import User from "./children/User/User";
+import Index from "./children/Index/Index";
+
 
 const {
     Header, Sider, Content,
@@ -21,21 +24,22 @@ class Main extends  Component {
 
 
     render() {
+        //console.log(this)
         return (
             <div className="main">
                 <Layout className="main-content">
-                <Header className='header'><Top  history={this.props.history}/></Header>
-                <Layout className="sub">
-                    <Sider className='sider'><Left/></Sider>
-                    <Content className='content'>
-                        <Route path='/main/user' component={User}/>
-
-                        <Route path='/main/shop' component={Shop}/>
-
-
-                    </Content>
+                    <Header className='header'><Top  history={this.props.history}/></Header>
+                    <Layout className="sub">
+                        <Sider className='sider'><Left/></Sider>
+                        <Content className='content'>
+                            <Switch>
+                                <Route path='/main/index'  component={Index}/>
+                                <Route path='/main/user' component={User}/>
+                                <Route path='/main/shop' component={Shop}/>
+                            </Switch>
+                        </Content>
+                    </Layout>
                 </Layout>
-            </Layout>
             </div>
         )
 

@@ -24,3 +24,6 @@ export const addShop =(shop)=> {
 //请求用户数据
 export const getUserList =()=> Ajax(BASE_URL+'/manage/user');
 
+//用户登录
+export const userLogin =(user)=> Ajax(BASE_URL+'/manage/userLogin',user,'POST');
+
