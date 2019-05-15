@@ -15,6 +15,11 @@ class Shop extends Component {
     constructor(props) {
         super(props);
         this.state = {
+
+            table: '',// 数据导出 对应table
+            excelUrl:'',//excel链接
+            wordUrl:'',//word链接
+
             //面包屑路由
             routes: [
                 {
@@ -43,6 +48,10 @@ class Shop extends Component {
             }, //被添加商品的数据
             addShopImgLoading: false,  //添加商品 上传图片 加载中状态
             addShopImgUrl: '', //添加商品 上传图片路径
+
+
+            exportModalVisible: false,//导出Modal
+
 
             updateBtnDisable: true,  //修改按钮禁用
             deleteBtnDisable: true,  // 删除按钮禁用
@@ -90,14 +99,15 @@ class Shop extends Component {
                             <span>
                     <Button type={'primary'} ghost onClick={() => this.shopShow(record)}>查看</Button>
                       <Divider type={'vertical'}/>
-                      <Button type={'primary'}  disabled={this.state.updateBtnDisable} onClick={() => this.shopUpdate(record)}>修改</Button>
+                      <Button type={'primary'} disabled={this.state.updateBtnDisable}
+                              onClick={() => this.shopUpdate(record)}>修改</Button>
                       <Divider type={'vertical'}/>
-                       <span style={{display:this.state.deleteBtnDisable?'none':'inline'}} >
+                       <span style={{display: this.state.deleteBtnDisable ? 'none' : 'inline'}}>
                       <Popconfirm
                           title="确定要删除吗？"
                           onConfirm={() => this.shopDeleteConfirm(record)} onCancel={this.shopDeleteCancel}
                           okText="是" cancelText="否">
-                     <Button type={'danger'} >删除</Button>
+                     <Button type={'danger'}>删除</Button>
                      </Popconfirm>
                       </span>
 
@@ -157,12 +167,12 @@ class Shop extends Component {
     //挂载前请求商品数据
     componentWillMount() {
         this.props.reqGetShopData();
-        if(this.props.user.userPermission===0){
+        if (this.props.user.userPermission === 0) {
             this.setState({
                 updateBtnDisable: true,
                 deleteBtnDisable: true,
             })
-        }else  if(this.props.user.userPermission===1){
+        } else if (this.props.user.userPermission === 1) {
             this.setState({
                 updateBtnDisable: false,
                 deleteBtnDisable: false,
@@ -208,6 +218,51 @@ class Shop extends Component {
 
     }
 
+
+    //商品导出Modal显示
+    shopExport = (record) => {
+        // console.log(record);
+        this.setState({
+            exportModalVisible: true,
+            table: React.createRef()  //获取table Dom节点
+        });
+    };
+    //商品导出Modal隐藏
+    exportHandleCancel = () => {
+        this.setState({
+            exportModalVisible: false,
+        })
+    }
+
+    //导出word数据
+    shopExportExcel() {
+        // 获取table表格html文本
+        let tableHtml = this.state.table.current.outerHTML;
+        //生成excel对应的html
+        let excelHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:" + tableHtml + "' xmlns='http://www.w3.org/TR/REC-html40'>" + tableHtml + "</body></html>";
+        //创建excel链接
+        let excelUrl = URL.createObjectURL(new Blob([excelHtml], {type: 'application/vnd.ms-excel'}))
+
+        this.setState({
+          excelUrl:excelUrl    //设置excel链接
+        })
+
+
+    }
+
+    //导出excel数据
+    shopExportWord() {
+        // 获取table表格html文本
+        let tableHtml = this.state.table.current.outerHTML;
+        //生成Word对应的html
+        let wordHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:" + tableHtml + "' xmlns='http://www.w3.org/TR/REC-html40'>" + tableHtml + "</body></html>";
+        //创建Word链接
+        let wordUrl = URL.createObjectURL(new Blob([wordHtml], {type: 'application/msword'}))
+
+        this.setState({
+            wordUrl:wordUrl    //设置Word链接
+        })
+    }
 
     //商品数据添加Modal显示
     shopAdd = () => {
@@ -377,9 +432,6 @@ class Shop extends Component {
     }
 
 
-
-
-
     //设置商品行的key值
     setRowKey(record) {
         return record.shopId;
@@ -440,6 +492,9 @@ class Shop extends Component {
 
                 <div className="shop-top">
                     <Button className='shop-add-btn' type={'primary'} onClick={() => this.shopAdd()}>添加商品</Button>
+                    <Button className='shop-export-btn' type={'primary'} style={{marginLeft: '10px'}}
+                            onClick={() => this.shopExport()}>导出商品</Button>
+
                     <Search
                         className='shop-search'
                         placeholder="请输入商品名称"
@@ -454,6 +509,48 @@ class Shop extends Component {
                        columns={this.state.columns}
                        rowSelection={this.state.rowSelection}
                        rowKey={this.setRowKey}/>
+
+
+                <Modal
+                    title="商品信息"
+                    visible={this.state.exportModalVisible}
+                    onCancel={this.exportHandleCancel}
+                    footer={null}
+                    centered={true}
+                >
+                    <Button style={{marginBottom: '10px', marginRight: '10px'}}  href={this.state.wordUrl}  download={'商品信息'} className='' type={'primary'}
+                            onClick={() => this.shopExportWord()}>Word格式</Button>
+
+                    <Button style={{marginBottom: '10px'}}  href={this.state.excelUrl}  download={'商品信息'} className='' type={'primary'}
+                            onClick={() => this.shopExportExcel()}>Excel格式</Button>
+                    <table border="1" ref={this.state.table}>
+                        <thead>
+                        <tr>
+                            {
+                                this.state.columns.map((item, index) => {
+                                        if (this.state.columns.length - 1 === index || index === 1) return;
+                                        return (<th key={index}>{item.title}</th>)
+                                    }
+                                )
+                            }
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {
+                            this.props.shopList.map((shop, shopIndex) => {
+                                return (<tr key={shopIndex}>
+                                    <td>{shop.shopId}</td>
+                                    <td>{shop.shopName}</td>
+                                    <td>{shop.shopPrice}</td>
+                                </tr>)
+                            })
+                        }
+
+                        </tbody>
+                    </table>
+                </Modal>
+
 
                 <Modal
                     title="商品信息"
@@ -568,7 +665,7 @@ class Shop extends Component {
 const mapStateToProps = (state) => {
     return {
         shopList: state.shopList,
-        user:state.user
+        user: state.user
     }
 };
 

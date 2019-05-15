@@ -122,7 +122,7 @@
     margin: 0 20px 20px 10px;
 }
 
-.shop .shop-top .shop-add-btn{
+.shop .shop-top .shop-add-btn,.shop-export-btn{
     float: left;
 }
 .shop .shop-top .shop-search{
